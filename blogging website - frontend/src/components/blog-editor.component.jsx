@@ -16,12 +16,13 @@ function BlogEditor() {
   //useEffect
   useEffect(() => {
     setTextEditor(new EditorJS({
-        holderId: "textEditor",
-        data: '',
-        tools: tools,
-        placeholder: "Write your blog here"
-    }))
-  }, [])
+      holderId: "textEditor",
+      data: '',
+      tools: tools,
+      placeholder: "Write your blog here"
+    }));
+  }, []);
+  
 
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
@@ -99,7 +100,6 @@ function BlogEditor() {
         </Link>
         <p className="max-md:hidden text-black line line-clamp-1 w-full ">
           { title.length ? title : "New blog"}
-          New blog
         </p>
 
         <div className="flex gap-4 ml-auto">
@@ -138,7 +138,7 @@ function BlogEditor() {
 
             <textarea
               placeholder="Blog Title"
-              className="text-4xl font-medium w-full h-20 outline-none resize-none bg-red mt-10 leading-tight placeholder:opacity-40"
+              className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
               onKeyDown={handleTitleKeyDown}
               onChange={handleTitleChange}
             >
@@ -148,7 +148,6 @@ function BlogEditor() {
             <hr className="w-full opacity-10 my-5"/>
 
             <div id="textEditor" className="font-gelasio">
-
             </div>
 
           </div>
