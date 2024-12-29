@@ -29,15 +29,7 @@ const UserAuthForm = ({ type }) => {
         toast.error(response.data.error);
       });
   };
-  // const userAuthThroughServer = async (serverRoute, formData) => {
-  //   try {
-  //     const { data } = await axios.post(${import.meta.env.VITE_SERVER_DOMAIN}${serverRoute}, formData);
-  //     storeInSession('user', JSON.stringify(data));
-  //     setUserAuth(data);
-  //   } catch (error) {
-  //     toast.error(error.response?.data?.error || 'An error occurred. Try again.');
-  //   }
-  // };
+ 
 
   const formRef = useRef();
 
