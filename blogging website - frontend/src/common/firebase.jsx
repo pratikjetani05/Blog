@@ -3,7 +3,7 @@ import {GoogleAuthProvider , getAuth, signInWithPopup} from "firebase/auth"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCeonVP1_YEZ4Zez21sY8NxlAk9RyKYaDg",
+  apiKey: import.meta.env.VITE_FIREBASE,
   authDomain: "blogging-web-2dc3d.firebaseapp.com",
   projectId: "blogging-web-2dc3d",
   storageBucket: "blogging-web-2dc3d.firebasestorage.app",
