@@ -6,4 +6,20 @@
 #     "password": "Kunaal"
 # }
 
-GET http://localhost:3000/get-upload-url
+# GET http://localhost:3000/get-upload-url
+
+# POST http://localhost:3000/create-blog
+# Content-Type: application/json
+
+# {
+#     "blog-name": "this is a test blog"
+# }
+
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{   
+    "fullname": "yagnik",
+    "email": "yagnik23@gmail.com",
+    "password": "Yagnik123 "
+}

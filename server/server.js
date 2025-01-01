@@ -9,6 +9,7 @@ import admin from "firebase-admin";
 import seviceAccountKey from "./blogging-web-2dc3d-firebase-adminsdk-c3zcg-385b601b83.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
 import aws from "aws-sdk";
+import Blog from "./Schema/Blog.js";
 
 // Schema below
 import User from "./Schema/User.js";
@@ -31,6 +32,25 @@ mongoose.connect(process.env.DB_LOCATION, {
   autoIndex: true,
 });
 
+const verifyJWT = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token == null) {
+    return res.status(401).json({ error: "No access token" });
+  }
+
+  jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) => {
+
+    if (err) {
+      return res.status(403).json({ error: "Access token is invalid" });
+    }
+
+    req.user = user.id;
+    next();
+  })
+}
+ 
 const formateDatatoSend = (user) => {
   const access_token = jwt.sign(
     { id: user._id },
@@ -227,6 +247,58 @@ server.post("/google-auth", async (req, res) => {
             "Failed to authenticate you with google. Try with some other google account",
         });
     });
+});
+
+server.post("/create-blog", verifyJWT, (req, res) => {
+
+  let authorId = req.user;
+
+  let { title, des, banner, tags , content , draft} = req.body;
+
+  if(!title.length){
+    return res.status(403).json({error: "Title is required to publish the blog"})
+  }
+
+  if(!des.length || des.length > 200){
+    return res.status(403).json({error: "You must provide blog Description under 200 characters"})
+  }
+
+  if(!banner.length){
+    return res.status(403).json({error: "You must upload a blog banner"})
+  }
+
+  if(!content.blocks.length){
+    return res.status(403).json({error: "There must be some blog content to publish it"})
+  }
+
+  if(!tags.length || tags.length > 10){
+    return res.status(403).json({error: "You must provide blog tags"})
+  }
+
+  tags = tags.map(tag => tag.toLowerCase());
+
+  let blogId = title.replace(/[^a-zA-Z0-9]/g,' ').replace(/\s+/g, '-').trim() + nanoid();
+
+  let blog = new Blog({
+    title, des, banner, content , tags , author: authorId, blogId, draft: Boolean(draft)
+  })
+
+  blog.save()
+  .then(blog => {
+    let incrementVal = draft ? 0 : 1;
+
+    User.findOneAndUpdate({_id: authorId}, {$inc: {"account_info.total_posts": incrementVal}, $push: {"blogs": blog._id}})
+    .then(user => {
+      return res.status(200).json({id: blog.blogId})
+    })
+    .catch(err => {
+      return res.status(500).json({error: "Failed to update total post number"})
+    })
+  })
+  .catch(err => {
+    return res.status(500).json({error: err.message})
+  })
+  
 });
 
 server.listen(PORT, () => {
