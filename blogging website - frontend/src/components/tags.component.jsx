@@ -33,7 +33,7 @@ const Tag = ({ tag,tagIndex}) => {
 
 
   return (
-    <div className="relative p-2 mt-2 mr-2 px-10 bg-white rounded-full inline-block hover:border-opacity-50 pr-10">
+    <div className="relative p-2 mt-2 mr-2 px-5 bg-white rounded-full inline-block hover:border-opacity-50 pr-10">
       <p className="outline-none" onClick={addEditable} onKeyDown={handleTagEdit}>
         {tag}
       </p>
