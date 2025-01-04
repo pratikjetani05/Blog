@@ -15,11 +15,18 @@
 #     "blog-name": "this is a test blog"
 # }
 
-POST http://localhost:3000/signup
+# POST http://localhost:3000/signup
+# Content-Type: application/json
+
+# {   
+#     "fullname": "yagnik",
+#     "email": "yagnik23@gmail.com",
+#     "password": "Yagnik123 "
+# }
+
+POST http://localhost:3000/search-users
 Content-Type: application/json
 
-{   
-    "fullname": "yagnik",
-    "email": "yagnik23@gmail.com",
-    "password": "Yagnik123 "
+{
+    "query": "yagnik"
 }
