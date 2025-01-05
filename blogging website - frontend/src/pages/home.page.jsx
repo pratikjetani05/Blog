@@ -27,7 +27,7 @@ const HomePage = () => {
     "travel",
   ];
 
-  const fetchLatestBlogs =  ({ page = 1 }) => {
+  const fetchLatestBlogs =  ({ page = 1}) => {
     axios
       .post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page })
       .then( async ({ data }) => {
@@ -193,7 +193,7 @@ const HomePage = () => {
           </div>
 
           <div>
-            <h1 className="font-medium text-xl mb-8">
+            <h1 className="font-medium text-xl mt-8 mb-3">
               Trending
               <i className="fi fi-rr-arrow-trend-up"></i>
             </h1>

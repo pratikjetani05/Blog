@@ -103,7 +103,7 @@ const UserAuthForm = ({ type }) => {
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center ">
         <Toaster />
-        <form id="formElement" ref={formRef} className="w-[80%] max-w-[400px]">
+        <form id="formElement" ref={formRef} onSubmit={handleSubmit} className="w-[80%] max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type == "sign-in" ? "Welcome Back" : "Join us today"}
           </h1>
