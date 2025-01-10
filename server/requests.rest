@@ -24,16 +24,16 @@
 #     "password": "Yagnik123 "
 # }
 
-# POST http://localhost:3000/get-blog
-# Content-Type: application/json
-
-# {
-#     "blog_id": "Two-Faiths-One-Celebration-Japan-s-Unique-New-Year-TraditionH2xwjl9BBI1OBIWw4x-b1"
-# }
-
-POST http://localhost:3000/get-profile
+POST http://localhost:3000/get-blog
 Content-Type: application/json
 
 {
-    "username": "pratik"
+    "blog_id": "Two-Faiths-One-Celebration-Japan-s-Unique-New-Year-TraditionH2xwjl9BBI1OBIWw4x-b1"
 }
+
+# POST http://localhost:3000/get-profile
+# Content-Type: application/json
+
+# {
+#     "username": "pratik"
+# }

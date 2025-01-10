@@ -241,126 +241,130 @@ server.post("/google-auth", async (req, res) => {
     });
 });
 
-
 server.post("/latest-blogs", (req, res) => {
-
   let { page } = req.body;
 
   let maxLimit = 5;
 
   Blog.find({ draft: false })
-  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
-  .sort({ "publishedAt": -1 })
-  .select("blog_id title des banner activity tags publishedAt -_id")
-  .skip((page - 1) * maxLimit)
-  .limit(maxLimit)
-  .then(blogs => {
-    return res.status(200).json({ blogs });
-  })
-  .catch(err => {
-    return res.status(500).json({ error: err.message });
-  })
-})
-
+    .populate(
+      "author",
+      "personal_info.profile_img personal_info.username personal_info.fullname -_id"
+    )
+    .sort({ publishedAt: -1 })
+    .select("blog_id title des banner activity tags publishedAt -_id")
+    .skip((page - 1) * maxLimit)
+    .limit(maxLimit)
+    .then((blogs) => {
+      return res.status(200).json({ blogs });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.post("/all-latest-blogs-count", (req, res) => {
-
   Blog.countDocuments({ draft: false })
-   .then(count => {
-    return res.status(200).json({ totalDocs: count });
-   })
-   .catch(err => {
-    console.log(err.message);
-    return res.status(500).json({ error: err.message });
+    .then((count) => {
+      return res.status(200).json({ totalDocs: count });
     })
-
-})
-
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.get("/trending-blogs", (req, res) => {
-  
   Blog.find({ draft: false })
-  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
-  .sort({ "activity.total_read": -1, "activity.total_like": -1, "publishedAt": -1})
-  .select("blog_id title publishAt -_id")
-  .limit(5)
-  .then(blogs => {
-    return res.status(200).json({blogs});
-  })
-  .catch(err => {
-    return res.status(500).json({ error: err.message });
-})
-})
-
+    .populate(
+      "author",
+      "personal_info.profile_img personal_info.username personal_info.fullname -_id"
+    )
+    .sort({
+      "activity.total_read": -1,
+      "activity.total_like": -1,
+      publishedAt: -1,
+    })
+    .select("blog_id title publishAt -_id")
+    .limit(5)
+    .then((blogs) => {
+      return res.status(200).json({ blogs });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.post("/search-blogs", (req, res) => {
-  let { tag, query , author, page, limit , eliminate_blog} = req.body;
+  let { tag, query, author, page, limit, eliminate_blog } = req.body;
 
   let findQuery;
 
-  if(tag){
-    findQuery = { tags: tag, draft: false, blog_id: { $ne: eliminate_blog} };
-  }else if(query){
+  if (tag) {
+    findQuery = { tags: tag, draft: false, blog_id: { $ne: eliminate_blog } };
+  } else if (query) {
     findQuery = { draft: false, title: new RegExp(query, "i") };
-  }else if(author){
-    findQuery = {author, draft: false};
+  } else if (author) {
+    findQuery = { author, draft: false };
   }
 
   let maxLimit = limit ? limit : 2;
 
   Blog.find(findQuery)
-  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
-  .sort({ "publishedAt": -1 })
-  .select("blog_id title des banner activity tags publishedAt -_id")
-  .skip((page - 1) * maxLimit)
-  .limit(maxLimit)
-  .then(blogs => {
-    return res.status(200).json ({ blogs });
-  })
-  .catch(err => {
-    return res.status(500).json({ error: err.message });
-  })
-
-})
+    .populate(
+      "author",
+      "personal_info.profile_img personal_info.username personal_info.fullname -_id"
+    )
+    .sort({ publishedAt: -1 })
+    .select("blog_id title des banner activity tags publishedAt -_id")
+    .skip((page - 1) * maxLimit)
+    .limit(maxLimit)
+    .then((blogs) => {
+      return res.status(200).json({ blogs });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.post("/search-blogs-count", (req, res) => {
   let { tag, author, query } = req.body;
 
   let findQuery;
 
-  if(tag){
+  if (tag) {
     findQuery = { tags: tag, draft: false };
-  }else if(query){
+  } else if (query) {
     findQuery = { draft: false, title: new RegExp(query, "i") };
-  }else if(author){
-    findQuery = {author, draft: false};
+  } else if (author) {
+    findQuery = { author, draft: false };
   }
 
   Blog.countDocuments(findQuery)
-  .then(count => {
-    return res.status(200).json({ count });
-  })
-  .catch(err => {
-    console.log(err.message);
-    return res.status(500).json({ error: err.message });
+    .then((count) => {
+      return res.status(200).json({ count });
     })
-})
+    .catch((err) => {
+      console.log(err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
 
-
-server.post("/search-users", (req, res) => { 
+server.post("/search-users", (req, res) => {
   let { query } = req.body;
 
   User.find({ "personal_info.username": new RegExp(query, "i") })
-  .limit(50)
-  .select("personal_info.fullname personal_info.username personal_info.profile_img -_id")
-  .then(users => {
-    return res.status(200).json({ users })
-  })
-  .catch(err => {
-    return res.status(500).json({ error: err.message})
-  })
-})
-
+    .limit(50)
+    .select(
+      "personal_info.fullname personal_info.username personal_info.profile_img -_id"
+    )
+    .then((users) => {
+      return res.status(200).json({ users });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.post("/create-blog", verifyJWT, (req, res) => {
   let authorId = req.user;
@@ -439,44 +443,52 @@ server.post("/create-blog", verifyJWT, (req, res) => {
 });
 
 server.post("/get-profile", (req, res) => {
-    let { username } = req.body;
+  let { username } = req.body;
 
-    User.findOne({"personal_info.username": username })
-    .select("-personal_info.password -google_auth -updatedAt -blogs")   
-    .then(user => {
-      return res.status(200).json(user)
-    })   
-    .catch(err =>{
+  User.findOne({ "personal_info.username": username })
+    .select("-personal_info.password -google_auth -updatedAt -blogs")
+    .then((user) => {
+      return res.status(200).json(user);
+    })
+    .catch((err) => {
       console.log(err);
-      return res.status(500).json({error: err.message})
-    })             
-})
-
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.post("/get-blog", (req, res) => {
   let { blog_id } = req.body;
 
   let incrementVal = 1;
 
-  Blog.findOneAndUpdate({ blog_id }, { $inc : { "activity.total_reads": incrementVal}})
-  .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img  -_id")
-  .select("title des banner activity tags publishedAt blog_id tags")
-  .then(blog => {
+  Blog.findOneAndUpdate(
+    { blog_id },
+    { $inc: { "activity.total_reads": incrementVal } }
+  )
+    .populate(
+      "author",
+      "personal_info.fullname personal_info.username personal_info.profile_img"
+    )
+    .select("title des content banner activity tags publishedAt blog_id tags") // Include content here
+    .then((blog) => {
+      if (!blog) {
+        return res.status(404).json({ error: "Blog not found" });
+      }
 
-    User.findOneAndUpdate({ "personal_info.username": blog.author.personal_info.username }, { $inc : { "account_info.total_reads": incrementVal}
-    }) 
-    .catch(err => {
-      return res.status(500).json({error: err.message})
+      User.findOneAndUpdate(
+        { "personal_info.username": blog.author.personal_info.username },
+        { $inc: { "account_info.total_reads": incrementVal } }
+      ).catch((err) => {
+        console.error("Error updating user reads:", err.message);
+      });
+
+      return res.status(200).json({ blog });
     })
-
-    return res.status(200).json({ blog });
-
-  })
-  .catch(err => {
-    return res.status(500).json({error: err.message});
-  })
-})
-
+    .catch((err) => {
+      console.error("Error fetching blog:", err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
 
 server.listen(PORT, () => {
   console.log("listening ->" + PORT);

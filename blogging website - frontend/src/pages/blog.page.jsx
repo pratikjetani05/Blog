@@ -8,7 +8,8 @@ import BlogInteraction from "../components/blog-interaction.component"
 import BlogPostCard from "../components/blog-post.component" 
 import BlogContent from "../components/blog-content.component"
 
-export const blodStructure = {
+
+export const blogStructure = {
     title: '',
     des: '',
     content: [],
@@ -23,7 +24,7 @@ const BlogPage = () => {
 
     let { blog_id } = useParams()
 
-    const [ blog, setBlog ] = useState(blodStructure);
+    const [ blog, setBlog ] = useState(blogStructure);
     const [similarBlogs, setSimilarBlogs] = useState(null);
     const [ loading, setLoading ] = useState(true);
 
@@ -32,23 +33,25 @@ const BlogPage = () => {
     const fetchBlog = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
         .then(({ data: { blog } }) => {
-
-            setBlog(blog);
-
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: tags[0], limit: 6, eliminate_blog: blog_id })
-            .then(({ data }) => {
-
-                 setSimilarBlogs(data.blogs);
-                //  console.log(data.blogs);
-            })
-            setLoading(false);
             // console.log(blog);
+            
+            setBlog(blog);
+            // console.log(blog.content);
+            
+    
+            if (blog.tags?.length) {
+                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id })
+                .then(({ data }) => {
+                    setSimilarBlogs(data.blogs);
+                });
+            }
+            setLoading(false);
         })
         .catch(err => {
-            console.log(err);   
-            setLoading(false);         
-        })
-    }
+            console.error(err);
+            setLoading(false);
+        });
+    };
 
     useEffect(() => {
 
@@ -57,7 +60,7 @@ const BlogPage = () => {
     },[blog_id])
 
     const resetStates = () => {
-        setBlog(blodStructure);
+        setBlog(blogStructure);
         setSimilarBlogs(null);
         setLoading(true);
     }
@@ -97,13 +100,17 @@ const BlogPage = () => {
                     <BlogInteraction />
 
                     <div className="my-12 font-gelasio blog-page-content">
-                        {
-                            content[0].blocks.map((block, i) => {
+                        
+                        {   
+
+                             content[0].blocks.map((block, i) => {
                                 return <div key={i} className="my-4 md:my-8">
-                                    <BlogContent block={block}/>  
+                                    <BlogContent block={block} />
                                 </div>
-                            })
+                                }) 
+
                         }
+                        
                     </div>
 
                     <BlogInteraction />
