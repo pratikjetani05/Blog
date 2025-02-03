@@ -22,7 +22,9 @@ function BlogEditor() {
     setEditorState,
   } = useContext(EditorContext);
 
-  let { userAuth: { access_token } } = useContext(UserContext);
+  let {
+    userAuth: { access_token },
+  } = useContext(UserContext);
   let { blog_id } = useParams();
 
   let navigate = useNavigate();
@@ -135,11 +137,16 @@ function BlogEditor() {
           draft: true,
         };
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", {...blogObj, id: blog_id}, {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          })
+        axios
+          .post(
+            import.meta.env.VITE_SERVER_DOMAIN + "/create-blog",
+            { ...blogObj, id: blog_id },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+              },
+            }
+          )
           .then(() => {
             e.target.classList.add("disable");
 

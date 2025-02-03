@@ -399,23 +399,25 @@ server.post("/create-blog", verifyJWT, (req, res) => {
 
   tags = tags.map((tag) => tag.toLowerCase());
 
-  let blog_id = id || 
-      title
+  let blog_id =
+    id ||
+    title
       .replace(/[^a-zA-Z0-9]/g, " ")
       .replace(/\s+/g, "-")
       .trim() + nanoid();
 
-  if(id){
-
-    Blog.findOneAndUpdate({ blog_id }, { title, des, banner, content, tags, draft: draft ? draft : false})
-    .then(() => {
-      return res.status(200).json({ id: blog_id })
-    })
-    .catch(err => {
-      return res.status(500).json({ error: err.message })
-    })
-
-  }else{
+  if (id) {
+    Blog.findOneAndUpdate(
+      { blog_id },
+      { title, des, banner, content, tags, draft: draft ? draft : false }
+    )
+      .then(() => {
+        return res.status(200).json({ id: blog_id });
+      })
+      .catch((err) => {
+        return res.status(500).json({ error: err.message });
+      });
+  } else {
     let blog = new Blog({
       title,
       des,
@@ -426,12 +428,12 @@ server.post("/create-blog", verifyJWT, (req, res) => {
       blog_id,
       draft: Boolean(draft),
     });
-  
+
     blog
       .save()
       .then((blog) => {
         let incrementVal = draft ? 0 : 1;
-  
+
         User.findOneAndUpdate(
           { _id: authorId },
           {
@@ -469,9 +471,9 @@ server.post("/get-profile", (req, res) => {
 });
 
 server.post("/get-blog", (req, res) => {
-  let { blog_id , draft , mode } = req.body;
+  let { blog_id, draft, mode } = req.body;
 
-  let incrementVal = mode != 'edit' ? 1 : 0;
+  let incrementVal = mode != "edit" ? 1 : 0;
 
   Blog.findOneAndUpdate(
     { blog_id },
@@ -490,13 +492,14 @@ server.post("/get-blog", (req, res) => {
       User.findOneAndUpdate(
         { "personal_info.username": blog.author.personal_info.username },
         { $inc: { "account_info.total_reads": incrementVal } }
-      )
-      .catch((err) => {
+      ).catch((err) => {
         console.error("Error updating user reads:", err.message);
       });
 
-      if(blog.draft && !draft){
-        return  res.status(500).json({ error: "You can not access draft blog" });
+      if (blog.draft && !draft) {
+        return res
+          .status(500)
+          .json({ error: "You can not access draft blogs" });
       }
 
       return res.status(200).json({ blog });

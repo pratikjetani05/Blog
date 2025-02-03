@@ -11,7 +11,7 @@ function PublishForm() {
   let characterLimit = 200;
   let tagLimit = 10;
 
-  let { blod_id } = useParams();
+  let { blog_id } = useParams();
 
   let {
     blog,
@@ -93,7 +93,7 @@ function PublishForm() {
        title, banner, des, content, tags, draft:false 
     }
 
-    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", {...blogObj, id: blod_id }, {
+    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", {...blogObj, id: blog_id }, {
       headers:{
         'Authorization': `Bearer ${access_token}`
       }
