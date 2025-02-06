@@ -9,10 +9,11 @@ import admin from "firebase-admin";
 import seviceAccountKey from "./blogging-web-2dc3d-firebase-adminsdk-c3zcg-385b601b83.json" assert { type: "json" };
 import { getAuth } from "firebase-admin/auth";
 import aws from "aws-sdk";
-import Blog from "./Schema/Blog.js";
 
 // Schema below
 import User from "./Schema/User.js";
+import Blog from "./Schema/Blog.js";
+import Notification from "./Schema/Notification.js";
 
 const server = express();
 let PORT = 3000;
@@ -506,6 +507,57 @@ server.post("/get-blog", (req, res) => {
     })
     .catch((err) => {
       console.error("Error fetching blog:", err.message);
+      return res.status(500).json({ error: err.message });
+    });
+});
+
+server.post("/like-blog", verifyJWT, (req, res) => {
+  let user_id = req.user;
+
+  let { _id, islikedByUser } = req.body;
+
+  let incrementVal = !islikedByUser ? 1 : -1;
+
+  Blog.findOneAndUpdate(
+    { _id },
+    { $inc: { "activity.total_likes": incrementVal } }
+  ).then((blog) => {
+    if (!islikedByUser) {
+      let like = new Notification({
+        type: "like",
+        blog: _id,
+        notification_for: blog.author,
+        user: user_id,
+      });
+
+      like.save().then((notification) => {
+        return res.status(200).json({ liked_by_user: true });
+      })
+    }
+    else{
+
+      Notification.findOneAndDelete({ user: user_id, blog: _id, type: "like" })
+      .then(data => {
+        return res.status(200).json({ liked_by_user: false });
+      })
+      .catch(err => {
+        return res.status(500).json({ error: err.message });  
+      })
+
+    }
+  });
+});
+
+server.post("/isliked-by-user", verifyJWT, (req, res) => {
+  let user_id = req.user;
+
+  let { _id } = req.body;
+
+  Notification.exists({ user: user_id, blog: _id, type: "like" })
+    .then(result => {
+      return res.status(200).json({ result });
+    })
+    .catch(err => {
       return res.status(500).json({ error: err.message });
     });
 });
