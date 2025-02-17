@@ -7,7 +7,7 @@ import axios from "axios";
 
 const BlogInteraction = () => {
 
-    let { blog, blog: { _id, title, blog_id, activity, activity: { total_likes, total_comments}, author: {personal_info: { username: author_username }} }, setBlog, islikedByUser, setIslikedByUser, setCommentsWrapper } = useContext(BlogContext);
+    let { blog, blog: { _id, title, blog_id, activity, activity: { total_likes, total_comments}, author: {personal_info: { username: author_username }} }, setBlog, islikedByUser, setLikedByUser,  setCommentsWrapper } = useContext(BlogContext);
 
     let { userAuth: { username, access_token } } = useContext(UserContext)
 
@@ -23,7 +23,7 @@ const BlogInteraction = () => {
           })
           .then(({ data : {result} }) => {
             
-            setIslikedByUser(Boolean(result));
+            setLikedByUser(Boolean(result));
             
           })
           .catch(err => {
@@ -36,8 +36,7 @@ const BlogInteraction = () => {
     const handleLike = () => {
         if(access_token){
           //liked blog
-          
-          setIslikedByUser(preVal =>!preVal);
+          setLikedByUser(preVal =>!preVal);
 
           !islikedByUser ? total_likes++ : total_likes--;
 

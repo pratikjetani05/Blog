@@ -580,7 +580,7 @@ server.post("/add-comment", verifyJWT, (req, res) => {
   commentObj.save().then(commentFile => {
     let { comment, commentedAt, children } = commentFile;
 
-    Blog.findOneAndUpdate({ _id },{  $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1 }, "activity.total_parent_comment": 1 })
+    Blog.findOneAndUpdate({ _id },{ $push: { "comments": commentFile._id }, $inc: { "activity.total_comments": 1 }, "activity.total_parent_comments": 1 })
     .then(blog => { console.log('New comment created') });
 
     let notificationObj = {
@@ -588,7 +588,7 @@ server.post("/add-comment", verifyJWT, (req, res) => {
         blog: _id,
         notification_for: blog_author,
         user: user_id,
-        comment : commentFile._id
+        comment: commentFile._id
     }
 
     new Notification(notificationObj).save().then(notification => {console.log('New notification created')})
@@ -598,8 +598,8 @@ server.post("/add-comment", verifyJWT, (req, res) => {
 
 })
 
-server.post("/get-blog-comments",(req, res) => {
-  let { blog_id,skip } = req.body;
+server.post("/get-blog-comments", (req, res) => {
+  let { blog_id, skip } = req.body;
 
   let maxLimit = 5;
 
@@ -611,7 +611,7 @@ server.post("/get-blog-comments",(req, res) => {
     'commentedAt': -1
   })
   .then(comment => {
-    return res.status(200).json( comment );
+    return res.status(200).json(comment);
   })
   .catch(err => {
     console.log(err.message);

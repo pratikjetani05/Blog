@@ -25,24 +25,25 @@ const BlogPage = () => {
     let { blog_id } = useParams()
 
     const [ blog, setBlog ] = useState(blogStructure);
-    const [similarBlogs, setSimilarBlogs] = useState(null);
+    const [ similarBlogs, setSimilarBlogs] = useState(null);
     const [ loading, setLoading ] = useState(true);
-    const [islikedByUser, setLikedByUser] = useState(false);
-    const [commentsWrapper , setCommentsWrapper] = useState(false);
-    const [totalParentCommentsLoaded , setTotalParentCommentsLoaded] = useState(0);
+    const [ islikedByUser, setLikedByUser] = useState(false);
+    const [ commentsWrapper, setCommentsWrapper] = useState(false);
+    const [ totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
-    let { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog; 
+    let { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt,  } = blog; 
 
     const fetchBlog = () => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
         .then(async ({ data: { blog } }) => {
 
-            blog.comments = await fetchComments({ blog_id: blog._id, setParentCommentCountFun: setTotalParentCommentsLoaded })
+            // console.log('before ->',blog);
+            blog.comments = await fetchComments({ blog_id: blog._id, setParentCommentCountFun: setTotalParentCommentsLoaded }) ;
+            // console.log('After ->',blog);
             
-            // console.log(blog);
             setBlog(blog);
-            // console.log(blog.content);
+            // console.log(blog);
         
             if (blog.tags?.length) {
                 axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id })

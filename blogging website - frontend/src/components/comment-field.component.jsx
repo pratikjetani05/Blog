@@ -4,11 +4,11 @@ import { UserContext } from "../App"
 import axios from "axios"
 import { BlogContext } from "../pages/blog.page"
 
-const CommentsField = ({ action  }) => {
+const CommentsField = ({ action }) => {
 
     let { blog, blog: { _id, author: { _id: blog_author}, comments, activity, activity: { total_comments, total_parent_comments }}, setBlog, setTotalParentCommentsLoaded } = useContext(BlogContext);
 
-    let { userAuth: { access_token,username, fullname, profile_img } } = useContext(UserContext)
+    let { userAuth: { access_token, username, fullname, profile_img } } = useContext(UserContext)
 
     const [comment, setComment] = useState("")
 
@@ -30,6 +30,8 @@ const CommentsField = ({ action  }) => {
             }
         })
         .then(({ data }) => {
+            // console.log(data);
+            
             setComment("");
 
             data.commented_by = { personal_info: { username, profile_img, fullname} }

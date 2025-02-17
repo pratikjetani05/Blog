@@ -2,15 +2,16 @@ import { useContext } from "react"
 import { BlogContext } from "../pages/blog.page"
 import CommentsField from "./comment-field.component"
 import axios from "axios"
+import NoDataMessage from "./nodata.component"
 
 export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFun, comment_array = null }) => {
 
     let res;
 
-    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-comments",{ blog_id, skip })
+    await axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog-comments",{ blog_id, skip })
     .then(({ data }) => {
         data.map(comment => {
-            comment_array.childrenLevel = 0;
+            comment.childrenLevel = 0;
         })
 
         setParentCommentCountFun(preVal => preVal + data.length)
@@ -25,8 +26,10 @@ export const fetchComments = async ({ skip = 0, blog_id, setParentCommentCountFu
 
 const CommentsContainer = () => {
 
-    let { blog: { title },commentsWrapper, setCommentsWrapper } = useContext(BlogContext)
+    let { blog: { title,   }, commentsWrapper, setCommentsWrapper } = useContext(BlogContext)
 
+    // console.log(commentsArr);
+    
     return(
         <div className={"max-sm:w-full fixed " + ( commentsWrapper ? "top-0 sm:right-0" : "top-[100%] sm:right-[-100%]") + "  duration-700 max-sm:right-0 sm:top-0 w-[30%] min-w-[350px] h-full z-50 bg-white shadow-2xl p-8 px-16 overflow-y-auto overflow-x-hidden"}>
 
@@ -46,6 +49,12 @@ const CommentsContainer = () => {
 
             <CommentsField action="comment"/>
 
+            {/* {
+                commentsArr && commentsArr.length ?
+                commentsArr.map((comment, i) => {
+                    return comment.comment;
+                }): <NoDataMessage message="No comments found" />
+            } */}
         </div>
     )
 }
