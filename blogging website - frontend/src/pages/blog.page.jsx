@@ -42,7 +42,7 @@ const BlogPage = () => {
             
             setBlog(blog);
             // console.log(blog);            
-            setLikedByUser(blog.liked_by.includes(sessionStorage.getItem("user_id")));
+            setLikedByUser(blog.liked_by?.includes(sessionStorage.getItem("user_id")));
         
             if (blog.tags?.length) {
                 axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id })

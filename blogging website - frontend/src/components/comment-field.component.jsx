@@ -46,7 +46,7 @@ const CommentsField = ({ action, index = undefined, replyingTo = undefined , set
 
                 commentsArr[index].isReplyLoaded = true;
 
-                commentsArr.splice(index + 1, 0 ,data);
+                commentsArr.splice(index + 1, 0 , data);
 
                 newCommentArr = commentsArr;
 
