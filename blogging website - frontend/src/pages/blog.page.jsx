@@ -38,12 +38,11 @@ const BlogPage = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-blog", { blog_id })
         .then(async ({ data: { blog } }) => {
 
-            // console.log('before ->',blog);
             blog.comments = await fetchComments({ blog_id: blog._id, setParentCommentCountFun: setTotalParentCommentsLoaded }) ;
-            // console.log('After ->',blog);
             
             setBlog(blog);
-            // console.log(blog);
+            // console.log(blog);            
+            setLikedByUser(blog.liked_by.includes(sessionStorage.getItem("user_id")));
         
             if (blog.tags?.length) {
                 axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blog_id })
